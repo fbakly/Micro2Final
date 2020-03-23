@@ -89,10 +89,6 @@ void bh1750_reset() {
 	i2c_transmit(I2C_STOP);
 }
 
-void bh1750_init() {
-	i2c_start(BH1750_ID, BH1750_ADDRESS, WRITE);
-	bh1750_reset();
-}
 
 void bh1750_sleep() {
 	i2c_start(BH1750_ID, BH1750_ADDRESS, WRITE);
@@ -111,7 +107,6 @@ void i2c_init() {
 void init() {
 	USART_init();
 	i2c_init();
-	bh1750_init();
 }
 
 void mcp_iodir(uint8_t direction) {
@@ -134,9 +129,6 @@ void mcp_write(uint8_t data) {
 
 uint16_t read_lux() {
 	uint16_t lux_level;
-	
-	// reset the data register
-	bh1750_reset();
 	
 	i2c_start(BH1750_ID, BH1750_ADDRESS, WRITE);
 
@@ -182,6 +174,7 @@ int main(void) {
 	uint16_t lux;
 	mcp_iodir(WRITE);
 	while (1) {
+		// Clear the data register
 		bh1750_reset();
 		lux = read_lux();
 		USART_transmit(lux >> 8);
