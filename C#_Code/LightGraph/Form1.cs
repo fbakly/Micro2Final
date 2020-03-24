@@ -43,13 +43,8 @@ namespace LightGraph
             return fs;
         }
 
-        private void InitPlotView()
+        private void SetAxes()
         {
-            pv.Location = new Point(0, 50);
-            pv.Size = new Size(500, 200);
-            this.Controls.Add(pv);
-            pv.Model = new PlotModel { Title = "Light Level Plot" };
-
             pv.Model.Axes.Add(new DateTimeAxis
             {
                 Position = AxisPosition.Bottom,
@@ -63,6 +58,15 @@ namespace LightGraph
                 Minimum = DateTimeAxis.ToDouble(0),
                 Title = "Lux"
             });
+        }
+
+        private void InitPlotView()
+        {
+            pv.Location = new Point(0, 50);
+            pv.Size = new Size(500, 200);
+            this.Controls.Add(pv);
+            pv.Model = new PlotModel { Title = "Light Level Plot" };
+            SetAxes();
         }
 
         private void PlotData()
@@ -92,7 +96,9 @@ namespace LightGraph
 
         private void button1_Click(object sender, EventArgs e)
         {
-            pv.Model.Series.Clear();
+            this.Controls.Remove(pv);
+            InitPlotView();
+            this.Controls.Add(pv);
             PlotData();
         }
     }
